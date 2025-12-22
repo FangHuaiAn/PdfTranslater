@@ -21,9 +21,19 @@ internal static class ProgramEntrypoint
             var options = CliOptionsParser.Parse(args);
             var environment = EnvironmentConfig.Load(); // load env vars to decide translation provider
 
-            ITranslationProvider translationProvider = environment.HasAzureCredentials
-                ? new AzureTranslatorClient(environment)
-                : new MockTranslationProvider(); // fallback to mock when credentials are absent so CLI still runs
+            ITranslationProvider translationProvider;
+            if (environment.HasOpenAiKey)
+            {
+                translationProvider = new OpenAITranslationProvider(environment);
+            }
+            else if (environment.HasAzureCredentials)
+            {
+                translationProvider = new AzureTranslatorClient(environment);
+            }
+            else
+            {
+                translationProvider = new MockTranslationProvider(); // fallback to mock when credentials are absent so CLI still runs
+            }
 
             var extractor = new PdfTextExtractor();
             var translator = new BatchTranslator(translationProvider);

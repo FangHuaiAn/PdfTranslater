@@ -198,6 +198,10 @@ ClientBin/
 *.dbmdl
 *.dbproj.schemaview
 *.jfm
+
+# Local translation outputs and sample PDF fixtures
+OutputDicuments/
+Spec/test-pdfs/*.pdf
 *.pfx
 *.publishsettings
 node_modules/
