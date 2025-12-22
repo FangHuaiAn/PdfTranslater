@@ -1,0 +1,24 @@
+{
+  "version": 2,
+  "dgSpecHash": "KZYZoGouSmo=",
+  "success": false,
+  "projectFilePath": "/Users/fanghuaian/Documents/Projects/dotnet/PdfTranslater/Code/PdfTranslater.Console/PdfTranslater.Console.csproj",
+  "expectedPackageFiles": [
+    "/Users/fanghuaian/.nuget/packages/microsoft.netcore.app.ref/8.0.22/microsoft.netcore.app.ref.8.0.22.nupkg.sha512",
+    "/Users/fanghuaian/.nuget/packages/microsoft.aspnetcore.app.ref/8.0.22/microsoft.aspnetcore.app.ref.8.0.22.nupkg.sha512",
+    "/Users/fanghuaian/.nuget/packages/microsoft.netcore.app.host.osx-arm64/8.0.22/microsoft.netcore.app.host.osx-arm64.8.0.22.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "NU1103",
+      "level": "Error",
+      "message": "Unable to find a stable package UglyToad.PdfPig with version (>= 0.1.9)\n  - Found 2 version(s) in nuget.org [ Nearest version: 1.7.0-custom-5 ]",
+      "projectPath": "/Users/fanghuaian/Documents/Projects/dotnet/PdfTranslater/Code/PdfTranslater.Console/PdfTranslater.Console.csproj",
+      "filePath": "/Users/fanghuaian/Documents/Projects/dotnet/PdfTranslater/Code/PdfTranslater.Console/PdfTranslater.Console.csproj",
+      "libraryId": "UglyToad.PdfPig",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    }
+  ]
+}
