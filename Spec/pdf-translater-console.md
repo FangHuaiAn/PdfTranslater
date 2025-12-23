@@ -19,7 +19,7 @@
 4. 輸出
    - 產出 UTF-8 markdown (`.md`) 或純文字 (`.txt`)，以 page header 分隔。
    - 檔案不存在時自動建立；存在時需 `--force` 才覆蓋。
-   - 每次翻譯結果會寫到 `OutputDicuments/<source-file-name>/`，該資料夾也會放入原始 PDF 的複本，且所有頁面都顯示 OpenAI 回傳的 JSON 句對句清單，方便容易比對。
+   - 每次翻譯結果會寫到 `OutputDocuments/<source-file-name>/`，翻譯檔以 `<source-base>-中文` 命名並保留副檔名；同一資料夾也會存放原始 PDF，且每頁仍展示 OpenAI 回傳的 JSON 句對句清單，方便比對。
 5. 錯誤處理
    - 無法讀檔、API 回傳非 2xx、網路問題都需具體訊息與非 0 return code。
 

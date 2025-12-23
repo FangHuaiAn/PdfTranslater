@@ -11,7 +11,7 @@
 - **Integration 層**：`OpenAITranslationProvider` 優先呼叫 OpenAI Responses API（需 `OPENAI_API_KEY`，可選 `OPENAI_API_BASE`、`OPENAI_MODEL`）。當 OpenAI 金鑰缺失但設定了 Azure 環境變數時會退回 `AzureTranslatorClient`，否則由 `MockTranslationProvider` 提供原文回應。
 - **設定與機密**：使用環境變數或 `dotnet user-secrets` 提供 `OPENAI_API_KEY`（可選 `OPENAI_API_BASE`、`OPENAI_MODEL`）或 `AZURE_TRANSLATOR_KEY`, `AZURE_TRANSLATOR_REGION`, `AZURE_TRANSLATOR_ENDPOINT`；log 內自動遮罩。
 - **Test assets**：Sample PDF 測試檔放在 Spec/test-pdfs 目錄，由 [config/test-resources.json](config/test-resources.json#L1-L2) 管理其位置，這樣 test 資料能保持與程式碼分離且可以輕鬆調整。
-- **輸出格式**：每次翻譯會在 `OutputDicuments/<source-file-name>/` 建立子資料夾，裡面保留 `translated.md` 或指定輸出檔案，並同時備份原始 PDF；所有頁面都會顯示句對句的英中區塊（OpenAI 以 JSON array 輸出句子對），方便校對。
+- **輸出格式**：每次翻譯會在 `OutputDocuments/<source-file-name>/` 建立子資料夾，翻譯檔案會依 `<source-base>-中文` 命名並保留原始副檔名（預設 `.md`），並將原始 PDF 移入該資料夾；所有頁面仍會顯示句對句的英中區塊（OpenAI 以 JSON array 輸出句子對），方便校對。
 
 ## 部署與營運
 - **Runtime**：鎖定 .NET 10，於 macOS/Linux/Windows CLI 上皆可執行。

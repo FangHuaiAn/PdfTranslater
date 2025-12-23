@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -46,7 +47,8 @@ internal sealed class PdfTranslationApp
         var output = BuildOutput(translatedPages, Path.GetExtension(options.OutputPath)); // format result per page header
         var finalOutputPath = ResolveFinalOutputPath(options);
         await _writer.WriteAsync(finalOutputPath, output, options.ForceOverwrite, cancellationToken);
-        CopySourcePdf(options.InputPath, finalOutputPath);
+        RemoveLegacyOutput(options, finalOutputPath);
+        MoveSourcePdf(options.InputPath, finalOutputPath);
     }
 
     private static string BuildOutput(IEnumerable<(PdfPageText page, string translation)> pages, string extension)
@@ -102,13 +104,13 @@ internal sealed class PdfTranslationApp
     {
         if (TryParseSentencePairs(translation, out var pairs))
         {
-            return pairs;
+            return ApplyTranslationOverrides(pairs);
         }
 
-        return new List<SentencePair>
+        return ApplyTranslationOverrides(new List<SentencePair>
         {
             new(original.Trim(), translation.Trim())
-        };
+        });
     }
 
     private static bool TryParseSentencePairs(string translation, out List<SentencePair> pairs)
@@ -134,10 +136,31 @@ internal sealed class PdfTranslationApp
         }
     }
 
+    private static List<SentencePair> ApplyTranslationOverrides(List<SentencePair> pairs)
+    {
+        var result = new List<SentencePair>(pairs.Count);
+        foreach (var pair in pairs)
+        {
+            var translation = pair.Translation;
+            foreach (var (term, replacement) in s_translationOverrides)
+            {
+                if (pair.Source.Contains(term, StringComparison.OrdinalIgnoreCase))
+                {
+                    translation = replacement;
+                    break;
+                }
+            }
+
+            result.Add(pair with { Translation = translation });
+        }
+
+        return result;
+    }
+
     private static string ResolveFinalOutputPath(AppOptions options)
     {
         var workspaceRoot = LocateSolutionRoot();
-        var outputDirectory = Path.Combine(workspaceRoot, "OutputDicuments");
+        var outputDirectory = Path.Combine(workspaceRoot, "OutputDocuments");
         var sourceFolder = Path.GetFileNameWithoutExtension(options.InputPath) switch
         {
             { Length: > 0 } value => value,
@@ -146,11 +169,16 @@ internal sealed class PdfTranslationApp
 
         var targetDirectory = Path.Combine(outputDirectory, sourceFolder);
         Directory.CreateDirectory(targetDirectory);
-        var outputFileName = Path.GetFileName(options.OutputPath);
-        return Path.Combine(targetDirectory, string.IsNullOrWhiteSpace(outputFileName) ? "translated.md" : outputFileName);
+        var extension = Path.GetExtension(options.OutputPath);
+        if (string.IsNullOrWhiteSpace(extension))
+        {
+            extension = ".md";
+        }
+        var outputFileName = $"{sourceFolder}-中文{extension}";
+        return Path.Combine(targetDirectory, outputFileName);
     }
 
-    private static void CopySourcePdf(string sourcePath, string finalOutputPath)
+    private static void MoveSourcePdf(string sourcePath, string finalOutputPath)
     {
         var targetDirectory = Path.GetDirectoryName(finalOutputPath);
         if (targetDirectory is null)
@@ -159,8 +187,64 @@ internal sealed class PdfTranslationApp
         }
 
         var destination = Path.Combine(targetDirectory, Path.GetFileName(sourcePath));
-        File.Copy(sourcePath, destination, overwrite: true);
-        Console.WriteLine($"[INFO] Copied source PDF to {destination}");
+        try
+        {
+            if (File.Exists(sourcePath))
+            {
+                if (File.Exists(destination))
+                {
+                    File.Delete(destination);
+                }
+
+                File.Move(sourcePath, destination);
+                Console.WriteLine($"[INFO] Moved source PDF to {destination}");
+            }
+            else
+            {
+                Console.WriteLine($"[WARN] Source PDF not found at {sourcePath}, skipping move.");
+            }
+        }
+        catch (IOException ex)
+        {
+            Console.WriteLine($"[WARN] Unable to move source PDF: {ex.Message}");
+        }
+    }
+
+    private static void RemoveLegacyOutput(AppOptions options, string finalOutputPath)
+    {
+        var targetDirectory = Path.GetDirectoryName(finalOutputPath);
+        if (string.IsNullOrWhiteSpace(targetDirectory))
+        {
+            return;
+        }
+
+        var legacyFileName = Path.GetFileName(options.OutputPath);
+        if (string.IsNullOrWhiteSpace(legacyFileName))
+        {
+            return;
+        }
+
+        var finalFileName = Path.GetFileName(finalOutputPath);
+        if (string.Equals(legacyFileName, finalFileName, StringComparison.OrdinalIgnoreCase))
+        {
+            return;
+        }
+
+        var legacyPath = Path.Combine(targetDirectory, legacyFileName);
+        if (!File.Exists(legacyPath))
+        {
+            return;
+        }
+
+        try
+        {
+            File.Delete(legacyPath);
+            Console.WriteLine($"[INFO] Removed legacy output file {legacyPath}");
+        }
+        catch (IOException ex)
+        {
+            Console.WriteLine($"[WARN] Unable to remove legacy output file: {ex.Message}");
+        }
     }
 
     private static string LocateSolutionRoot()
@@ -178,6 +262,11 @@ internal sealed class PdfTranslationApp
 
         return Directory.GetCurrentDirectory();
     }
+
+    private static readonly Dictionary<string, string> s_translationOverrides = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["Net Assessment"] = "淨評估"
+    };
 
     private sealed record SentencePair([property: JsonPropertyName("source")] string Source, [property: JsonPropertyName("translation")] string Translation);
 }

@@ -115,12 +115,18 @@ internal static class CliOptionsParser
                 .OrderBy(f => f, StringComparer.OrdinalIgnoreCase)
                 .FirstOrDefault();
 
-            return candidate;
+            if (!string.IsNullOrWhiteSpace(candidate))
+            {
+                return candidate;
+            }
         }
         catch (JsonException)
         {
             return null;
         }
+
+        var fallback = FindPdfInOutputDocuments();
+        return fallback;
     }
 
     private static string? LocateConfigFile(params string[] segments)
@@ -138,6 +144,36 @@ internal static class CliOptionsParser
         }
 
         return null;
+    }
+
+    private static string? FindPdfInOutputDocuments()
+    {
+        var workspaceRoot = LocateSolutionRoot();
+        var outputDirectory = Path.Combine(workspaceRoot, "OutputDocuments");
+        if (!Directory.Exists(outputDirectory))
+        {
+            return null;
+        }
+
+        return Directory.EnumerateFiles(outputDirectory, "*.pdf", SearchOption.AllDirectories)
+            .OrderBy(f => f, StringComparer.OrdinalIgnoreCase)
+            .FirstOrDefault();
+    }
+
+    private static string LocateSolutionRoot()
+    {
+        var directory = new DirectoryInfo(Directory.GetCurrentDirectory());
+        while (directory != null)
+        {
+            if (File.Exists(Path.Combine(directory.FullName, "PdfTranslater.sln")))
+            {
+                return directory.FullName;
+            }
+
+            directory = directory.Parent;
+        }
+
+        return Directory.GetCurrentDirectory();
     }
 }
 
