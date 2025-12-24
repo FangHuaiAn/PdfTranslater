@@ -1,6 +1,6 @@
-namespace PdfTranslater.ConsoleApp;
+namespace PdfTranslater.Core;
 
-internal sealed record AppOptions(
+public sealed record AppOptions(
     string InputPath,
     string OutputPath,
     string SourceLanguage,

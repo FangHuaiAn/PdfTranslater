@@ -1,6 +1,6 @@
-namespace PdfTranslater.ConsoleApp.Services;
+namespace PdfTranslater.Core.Services;
 
-internal sealed class TranslationResultWriter
+public sealed class TranslationResultWriter
 {
     public async Task WriteAsync(string outputPath, string content, bool forceOverwrite, CancellationToken cancellationToken)
     {

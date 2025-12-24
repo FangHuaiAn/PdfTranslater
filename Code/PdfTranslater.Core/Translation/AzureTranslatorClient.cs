@@ -1,10 +1,11 @@
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
+using PdfTranslater.Core;
 
-namespace PdfTranslater.ConsoleApp.Translation;
+namespace PdfTranslater.Core.Translation;
 
-internal sealed class AzureTranslatorClient : ITranslationProvider
+public sealed class AzureTranslatorClient : ITranslationProvider
 {
     private readonly HttpClient _httpClient;
     private readonly string _endpoint;

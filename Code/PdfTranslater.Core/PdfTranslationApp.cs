@@ -4,11 +4,11 @@ using System.IO;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using PdfTranslater.ConsoleApp.Services;
+using PdfTranslater.Core.Services;
 
-namespace PdfTranslater.ConsoleApp;
+namespace PdfTranslater.Core;
 
-internal sealed class PdfTranslationApp
+public sealed class PdfTranslationApp
 {
     private readonly PdfTextExtractor _extractor;
     private readonly BatchTranslator _translator;

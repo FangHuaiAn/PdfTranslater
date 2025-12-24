@@ -1,6 +1,7 @@
 using PdfTranslater.ConsoleApp;
-using PdfTranslater.ConsoleApp.Services;
-using PdfTranslater.ConsoleApp.Translation;
+using PdfTranslater.Core;
+using PdfTranslater.Core.Services;
+using PdfTranslater.Core.Translation;
 
 return await ProgramEntrypoint.RunAsync(args);
 

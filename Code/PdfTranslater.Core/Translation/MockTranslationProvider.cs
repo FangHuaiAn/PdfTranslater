@@ -1,6 +1,6 @@
-namespace PdfTranslater.ConsoleApp.Translation;
+namespace PdfTranslater.Core.Translation;
 
-internal sealed class MockTranslationProvider : ITranslationProvider
+public sealed class MockTranslationProvider : ITranslationProvider
 {
     public Task<string> TranslateAsync(string text, string sourceLanguage, string targetLanguage, CancellationToken cancellationToken)
     {

@@ -1,8 +1,8 @@
 using UglyToad.PdfPig;
 
-namespace PdfTranslater.ConsoleApp.Services;
+namespace PdfTranslater.Core.Services;
 
-internal sealed class PdfTextExtractor
+public sealed class PdfTextExtractor
 {
     public Task<IReadOnlyList<PdfPageText>> ExtractAsync(string pdfPath, CancellationToken cancellationToken)
     {

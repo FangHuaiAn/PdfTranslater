@@ -1,6 +1,6 @@
-namespace PdfTranslater.ConsoleApp.Translation;
+namespace PdfTranslater.Core.Translation;
 
-internal interface ITranslationProvider
+public interface ITranslationProvider
 {
     Task<string> TranslateAsync(string text, string sourceLanguage, string targetLanguage, CancellationToken cancellationToken);
 }

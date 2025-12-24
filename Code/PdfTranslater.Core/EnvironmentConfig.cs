@@ -1,6 +1,6 @@
-namespace PdfTranslater.ConsoleApp;
+namespace PdfTranslater.Core;
 
-internal sealed record EnvironmentConfig(
+public sealed record EnvironmentConfig(
     string? TranslatorKey,
     string? TranslatorRegion,
     string? TranslatorEndpoint,

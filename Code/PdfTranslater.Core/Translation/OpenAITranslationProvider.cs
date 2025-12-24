@@ -1,10 +1,11 @@
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
+using PdfTranslater.Core;
 
-namespace PdfTranslater.ConsoleApp.Translation;
+namespace PdfTranslater.Core.Translation;
 
-internal sealed class OpenAITranslationProvider : ITranslationProvider
+public sealed class OpenAITranslationProvider : ITranslationProvider
 {
     private readonly HttpClient _httpClient;
     private readonly string _endpoint;

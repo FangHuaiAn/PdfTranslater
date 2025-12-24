@@ -1,9 +1,9 @@
 using System.Text;
-using PdfTranslater.ConsoleApp.Translation;
+using PdfTranslater.Core.Translation;
 
-namespace PdfTranslater.ConsoleApp.Services;
+namespace PdfTranslater.Core.Services;
 
-internal sealed class BatchTranslator
+public sealed class BatchTranslator
 {
     private const int MaxCharactersPerRequest = 4500; // keep Azure requests under quota per call
     private readonly ITranslationProvider _provider;

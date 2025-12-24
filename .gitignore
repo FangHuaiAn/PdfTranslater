@@ -201,6 +201,8 @@ ClientBin/
 
 # Local translation outputs and sample PDF fixtures
 OutputDicuments/
+OutputDocuments/
+InputDocuments/*.pdf
 Spec/test-pdfs/*.pdf
 *.pfx
 *.publishsettings
